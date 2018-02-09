@@ -22,10 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-/**
- *
- * @author moscac
- */
+
 public class MainController  {
 
     public ObservableList<Note> noteData = FXCollections.observableArrayList();
@@ -63,7 +60,7 @@ public class MainController  {
         titleColumn.setCellValueFactory(new PropertyValueFactory<Note, String>("title"));
         bodyColumn.setCellValueFactory(new PropertyValueFactory<Note, String>("body"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<Note, Date>("date"));
-        System.out.println("check");
+
         //Заполняем таблицу данными
         initData();
         noteTable.setItems(noteData);
@@ -91,29 +88,6 @@ public class MainController  {
         addDialogStage.showAndWait();
         noteData.add(addWindowController.getNote());
 
-
-
-
-
-
-
-
-
-/*        try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("new_note.fxml"));
-            stage.setTitle("Редактирование заметки");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.WINDOW_MODAL);
-            // Узнаём родительское окно
-            stage.initOwner(((Node)event.getSource()).getScene().getWindow());
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-*/
     }
     private void initLoader() {
 

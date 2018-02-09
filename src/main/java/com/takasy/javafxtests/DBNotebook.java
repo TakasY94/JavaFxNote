@@ -5,8 +5,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.util.concurrent.Callable;
 
-public class DBNotebook implements Runnable {
+public class DBNotebook implements Callable<ObservableList> {
 
     private static final String URL = "jdbc:mysql://localhost:3306/notes?autoReconnect=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private static final String USER = "root";
@@ -20,7 +21,7 @@ public class DBNotebook implements Runnable {
 
 
     @Override
-    public void run() {
+    public ObservableList call() {
         try {
             Driver driver = new com.mysql.cj.jdbc.Driver();
             DriverManager.registerDriver(driver);
@@ -38,11 +39,9 @@ public class DBNotebook implements Runnable {
                 noteData.add(note);
                 System.out.println(note.getTitle() + note.getBody() + note.getDate());
             }
-
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return noteData;
     }
 }
