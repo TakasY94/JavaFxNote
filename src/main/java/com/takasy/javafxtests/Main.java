@@ -23,15 +23,16 @@ public class Main extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+/*        ExecutorService executor = Executors.newSingleThreadExecutor();
         List<Future<ObservableList>> list = new ArrayList<Future<ObservableList>>();
         Callable<ObservableList> callable = new DBNotebook();
         Future<ObservableList> future = executor.submit(callable);
         list.add(future);
-        list.get(0);//TODO Полученный ObserveList нужно передать в MainController для отрисовки полей таблицы из БД
+        list.get(0);
         System.out.println(list.get(0).get());
         executor.shutdown();
-
+        //Перенес в MainController
+*/
 
 
         FXMLLoader fxmlLoader = new FXMLLoader();

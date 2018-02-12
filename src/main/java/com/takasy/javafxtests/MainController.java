@@ -5,14 +5,16 @@
 package com.takasy.javafxtests;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.*;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -49,24 +51,28 @@ public class MainController  {
     private AddWindowController addWindowController;
     private Stage addDialogStage;
 
-    public void setMainStage (Stage mainStage) {
-        this.mainStage = mainStage;
-    }
+
+
+    public MainController() {}
 
     @FXML
-    private void initialize() {
+    private void initialize() throws Exception {
 
         //Привязываем к колонкам определённые поля POJO Note
         titleColumn.setCellValueFactory(new PropertyValueFactory<Note, String>("title"));
         bodyColumn.setCellValueFactory(new PropertyValueFactory<Note, String>("body"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<Note, Date>("date"));
 
-        //Заполняем таблицу данными
-        initData();
-        noteTable.setItems(noteData);
+        //Заполняем таблицу данными из БД
+        noteTable.setItems(initDB());
         initLoader();
     }
 
+    public void setMainStage (Stage mainStage) {
+        this.mainStage = mainStage;
+    }
+
+    //Тестовый метод
     private void initData() {
         noteData.add(new Note("Alex1", "qwerty", new Date()));
         noteData.add(new Note("Alex2", "qwerty", new Date()));
@@ -77,7 +83,6 @@ public class MainController  {
 
     @FXML
     private void showDialog(ActionEvent event) {
-        addWindowController.setNote(new Note());
         if (addDialogStage == null){
             addDialogStage = new Stage();
             addDialogStage.setTitle("Редактирование заметки");
@@ -99,6 +104,15 @@ public class MainController  {
             e.printStackTrace();
         }
     }
-    
+
+    private ObservableList initDB() throws ExecutionException, InterruptedException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        List<Future<ObservableList>> list = new ArrayList<Future<ObservableList>>();
+        Callable<ObservableList> callable = new DBNotebook();
+        Future<ObservableList> future = executor.submit(callable);
+        list.add(future);
+        executor.shutdown();
+        return list.get(0).get();
+    }
 
 }

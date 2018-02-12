@@ -13,12 +13,11 @@ public class DBNotebook implements Callable<ObservableList> {
     private static final String USER = "root";
     private static final String PASSWORD = "root";
 
+    private ObservableList<Note> noteData = FXCollections.observableArrayList();
+
     public ObservableList<Note> getNoteData() {
         return noteData;
     }
-
-    private ObservableList<Note> noteData = FXCollections.observableArrayList();
-
 
     @Override
     public ObservableList call() {
@@ -43,5 +42,24 @@ public class DBNotebook implements Callable<ObservableList> {
             e.printStackTrace();
         }
         return noteData;
+    }
+
+    public void saveNote(Note note) {
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD); Statement statement = connection.createStatement()) {
+            System.out.println("Connection with db success (save)");
+
+            String title = note.getTitle();
+            String body = note.getBody();
+            //Date date = note.getDate();
+            String query = "INSERT INTO notedb (title, body, date) VALUES (?, ?, NOW())";
+            PreparedStatement prep = connection.prepareStatement(query);
+            prep.setString(1, title);
+            prep.setString(2, body);
+            prep.executeUpdate();
+            //prep.setDate(3, date);//TODO получать из util.Date sql.Date и вставлять (не критично так как время создания заметки и сохранения практически одинаковое)
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
